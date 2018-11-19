@@ -1,6 +1,7 @@
+require "pry"
 # Write your code here!
 def game_hash
-  game_hash =
+  # game_hash =
   {
     home: {
       team_name: "Brooklyn Nets",
@@ -151,7 +152,6 @@ def team_names
   teams << game_hash[:home][:team_name]
   teams
 end
-require "pry"
 
 def player_numbers(team_name)
   player_nums = []
@@ -199,13 +199,71 @@ def big_shoe_rebounds
   largest_stats = nil
   game_hash.each do |home_or_away, team|
     team[:players].each do |name, stats|
-      if largest_stats == nil
+      if largest_stats == nil || stats[:shoe] > largest_stats[:shoe]
         largest_stats = stats
-      else
-        largest_stats = stats if stats[:shoe] > largest_stats[:shoe]
       end
     end
   end
   largest_stats[:rebounds]
 end
 #should have used this method vs checking for home or away.
+
+def most_points_scored
+  most_points = nil
+  most_pts_name = nil
+  game_hash.each do |home_or_away, team|
+    team[:players].each do |name, stats|
+      if most_points == nil || stats[:points] > most_points[:points]
+        most_points = stats
+        most_pts_name = name
+      end
+    end
+  end
+  most_pts_name
+end
+
+
+def winning_team
+  total_points = 0
+  winner = ""
+  game_hash.each do |home_or_away, team|
+    current_team_points = 0
+    team[:players].each do |name, stats|
+      current_team_points += stats[:points]
+    end
+
+    if current_team_points > total_points
+      total_points = current_team_points
+      winner = team[:team_name]
+    end
+  end
+  winner
+end
+
+def player_with_longest_name
+  longest_name = ""
+  game_hash.each do |home_or_away, team|
+    team[:players].each do |name, stats|
+      longest_name = name if name.length > longest_name.length
+    end
+  end
+  longest_name
+end
+
+def player_with_most_steals
+  most_steals = 0
+  most_steals_player = ""
+  game_hash.each do |home_or_away, team|
+    team[:players].each do |name, stats|
+      if stats[:steals] > most_steals
+        most_steals = stats[:steals]
+        most_steals_player = name
+      end
+    end
+  end
+  most_steals_player
+end
+
+def long_name_steals_a_ton?
+  player_with_longest_name == player_with_most_steals
+end
